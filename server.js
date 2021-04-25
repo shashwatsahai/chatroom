@@ -1,72 +1,58 @@
-const express = require('express');
-const http = require('http');
-const path = require('path')
+require("dotenv").config();
+const express = require("express");
+const http = require("http");
+const path = require("path");
 const app = express();
-var bodyParser = require('body-parser')
-const formatMessage = require('./utils/messages');
-const {
-  userJoin,
-  getCurrentUser,
-  getRoomUsers,
-  userLeave
-} = require('./utils/users')
+const morgan = require("morgan");
+const helmet = require("helmet");
+var expressSession = require('express-session');
+const initMongo = require("./src/core/mongo/index")
+const PORT = process.env.PORT || 3000;
 
-const PORT = process.env.PORT || 3500;
+
 const server = http.createServer(app);
-const socket = require('socket.io')
+const socket = require("socket.io");
 const io = socket.listen(server);
 
-const botName = 'ChatCord Bot';
-
-
+const socketConnection = require("./src/core/socket/socketConnection");
+const apiRoutes = require("./src/routes/index");
 
 //Set Static folders
-app.use(express.static(path.join(__dirname, 'public')));
+app.set("view engine", "pug");
+app.use(express.static("public"));
 
-// parse application/json
-
-io.on('connection', function (socket) {
-  console.log("New connection")
-  socket.on('joinRoom', function ({ username, room}) {
-    //Welcome msg for the user
-
-    
-    const user = userJoin(socket.id, username, room);
-    socket.join(user.room); //join a socket for emits
-    socket.emit('message', formatMessage(botName, 'Welcome to Chat '+user.username)); //to the client
-
-    //BroadCast to everyone except user when user connects 
-    socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} has joined the chat`)); //to everyone except the client
-
-    //Send user and room info
-    io.to(user.room).emit('roomUsers', {
-      room: user.room,
-      users: getRoomUsers(user.room)
-    })
-  })
-
-  //BroadCast to all
-  socket.on('disconnect', function () {
-    var user = userLeave(socket.id);
-
-    if (user) {
-      io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
-
-      io.to(user.room).emit('roomUsers', {
-        room: user.room,
-        users: getRoomUsers(user.room)
-      });
+socketConnection(io);
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(expressSession({
+    secret: process.env.SECRET, saveUninitialized: false, resave: false, cookie: {
+        maxAge: 60000
     }
+}));
 
-  });
 
-  //Receive a message
-  socket.on('chatMessage', function (chatMessage) {
-    var user = getCurrentUser(socket.id);
-    console.log(user);
-    io.to(user.room).emit('message', formatMessage(chatMessage.username, chatMessage.msg));
-  })
 
-});
+app.use((req, res, next) => {
 
-server.listen(PORT, (err) => console.log("listening on", PORT));
+    if (req.session && req.session.user) {
+        return res.redirect("room", req.session.user)
+    }
+    next();
+})
+app.get("/", (req, res) => {
+    const error = (req.session.error || "none")
+    res.render("index", { error })
+})
+
+// routes
+app.use("/api", apiRoutes);
+
+initMongo().then(() => {
+    console.log("Connected to MongoDB");
+    server.listen(PORT, (err) => console.log("listening on", PORT));
+}).catch((e) => {
+    console.log("HERE", e);
+})
+

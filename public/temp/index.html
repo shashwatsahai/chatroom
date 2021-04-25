@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="./js/jquery-3.6.0.min.js"></script>
+    <script src="js/signin.js" defer></script>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <section class="main">
+        <div class="form_wrapper">
+            <input type="radio" class="radio" name="radio" id="login" checked />
+            <input type="radio" class="radio" name="radio" id="signup" />
+            <div class="tile">
+                <h3 class="login">Login Form</h3>
+                <h3 class="signup">Signup Form</h3>
+            </div>
+
+            <label class="tab login_tab" for="login">
+                Login
+            </label>
+
+            <label class="tab signup_tab" for="signup">
+                Signup
+            </label>
+            <span class="shape"></span>
+            <div class="form_wrap">
+                <div class="form_fild login_form">
+                    <form action="api/login" method="POST">
+                        <div class="input_group">
+                            <input type="email" name="email" class="input" placeholder="Email Address" />
+                        </div>
+                        <div class="input_group">
+                            <input type="password" name="password" class="input" placeholder="Password" />
+                        </div>
+
+                        <a href="#forgot" class="forgot">Forgot password?</a>
+
+                        <input type="submit" id="loginbtn" class="btn" value="Login" />
+
+                        <div class="not_mem">
+                            <label for="signup">Not a member? <span> Signup now</span></label>
+                        </div>
+                    </form>
+
+
+                </div>
+
+                <div class="form_fild signup_form">
+                    <form action="api/signup" method="POST">
+                        <div class="input_group">
+                            <input type="username" name="name" class="input" placeholder="Username" />
+                        </div>
+                        <div class="input_group">
+                            <input type="email" name="email" class="input" placeholder="Email Address" />
+                        </div>
+                        <div class="input_group">
+                            <input type="password" name="password" id="password" class="input" placeholder="Password" />
+                        </div>
+
+                        <div class="input_group">
+                            <input type="password" id="confirm_password" class="input" placeholder="Confirm Password" />
+                            <span id='message'></span>
+                        </div>
+
+                        <input type="submit" class="btn" id="signupbtn" value="Signup">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>

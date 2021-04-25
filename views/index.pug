@@ -1,0 +1,49 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Login
+  script(src='/js/jquery-3.6.0.min.js')
+  script(src='/js/signin.js' defer='')
+  link(rel='stylesheet' href='/css/index.css' type='text/css')
+section.main
+  .form_wrapper
+    input#login.radio(type='radio' name='radio' checked='')
+    input#signup.radio(type='radio' name='radio')
+    .tile
+      h3.login Login Form
+      h3.signup Signup Form
+    label.tab.login_tab(for='signin')
+      | Login
+    label.tab.signup_tab(for='signup')
+      | Signup
+    span.shape
+    .form_wrap
+      .form_fild.login_form
+        form(action='api/signin' method='POST')
+          .input_group
+            input.input(type='email' name='email' placeholder='Email Address')
+          .input_group
+            input.input(type='password' name='password' placeholder='Password')
+            if error !== "none"
+              span#message #{error}
+          a.forgot(href='#forgot') Forgot password?
+          input#loginbtn.btn(type='submit' value='Login')
+          .not_mem
+            label(for='signup')
+              | Not a member? 
+              span  Signup now
+      .form_fild.signup_form
+        form(action='api/signup' method='POST')
+          .input_group
+            input.input(type='username' name='name' placeholder='Username')
+          .input_group
+            input.input(type='email' name='email' placeholder='Email Address')
+          .input_group
+            input#password.input(type='password' name='password' placeholder='Password')
+          .input_group
+            input#confirm_password.input(type='password' placeholder='Confirm Password')
+            if error && error !== "none"
+                span#message #{error}
+          input#signupbtn.btn(type='submit' value='Signup')
