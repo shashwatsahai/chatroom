@@ -12,13 +12,12 @@ signin.auth = async (req, res, next) => {
             req.app.set("error", "Incorrect Email or Password")
             return res.redirect("/");
         }
-        let userDetails = req.session && req.session.user;
+        let userDetails;
         if (!userDetails) {
             userDetails = await mongoUser.getUser(user.email, user.password);
-            console.log("userDetails", userDetails);
-            req.session.user = userDetails;
-            //   await redisClient.set(user.email, JSON.stringify(userDetails));
         }
+        req.session.user = userDetails;
+        console.log("userDetailsHERE", userDetails);
         return res.render("room", userDetails);
     } catch (e) {
         console.log(e);

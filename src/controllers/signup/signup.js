@@ -25,6 +25,8 @@ signup.addUser = async (req, res, next) => {
             email: user.email,
             role: user.role
         };
+        // res.locals.username = req.session.username;
+        // res.locals.room = req.session.room;
         await redisClient.set(user.email, JSON.stringify(user));
         return res.render("room", user)
     } catch (e) {

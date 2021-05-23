@@ -20,7 +20,8 @@ userController.getUser = (email, password) => {
     return new Promise((resolve, reject) => {
         User.findOne({ email: email }, (err, user) => {
             if (err || !user) {
-                reject("User Not Found")
+                reject("User Not Found");
+                return;
             }
 
 

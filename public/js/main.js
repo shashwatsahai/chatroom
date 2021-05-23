@@ -1,14 +1,14 @@
 const socket = io();
 const chatMessages = document.querySelector('.chat-messages');
-const {
+let {
   username,
   room
 } = Qs.parse(location.search, {
   ignoreQueryPrefix: true
 });
 
-console.log(username, room)
-
+username = document.getElementById("username").innerHTML;
+room = document.getElementById("roomname").innerHTML;
 //Join chatroom
 socket.emit('joinRoom', {
   username,
@@ -56,7 +56,7 @@ function outputUsers(users){
 }
 
 function outputRoom(room){
-  document.getElementById('room-name').innerHTML = room;
+  document.getElementById('roomname').innerHTML = room;
 }
 
 function outputMessage(message) {

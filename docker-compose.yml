@@ -1,0 +1,28 @@
+version: "3"
+services: 
+    api-server:
+        image: sample-app
+        ports: 
+            - "3000:3000"
+        depends_on: 
+            - redis
+            - mongo
+    redis:
+        image: redis
+        ports: 
+            - "6379:6379"
+        volumes: 
+            - redis-data:/data/db
+    mongo:
+        image: mongo
+        ports:
+            - "27017:27017"
+        volumes: 
+            - mongo-data:/data/db
+volumes: 
+    mongo-data:
+        driver: local
+    redis-data:
+        driver: local
+    
+        
