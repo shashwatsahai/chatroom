@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const http = require("http");
+const https = require('https');
 const path = require("path");
 const app = express();
 const morgan = require("morgan");
@@ -8,9 +8,12 @@ const helmet = require("helmet");
 var expressSession = require('express-session');
 const initMongo = require("./src/core/mongo/index")
 const PORT = process.env.PORT || 3000;
+const fs = require("fs");
 
+const key = fs.readFileSync('./key.pem');
+const cert = fs.readFileSync('./cert.pem');
 
-const server = http.createServer(app);
+const server = https.createServer({ key: key, cert: cert }, app);
 const socket = require("socket.io");
 const io = socket.listen(server);
 
@@ -19,7 +22,7 @@ const apiRoutes = require("./src/routes/index");
 
 //Set Static folders
 app.set("view engine", "pug");
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
 socketConnection(io);
 app.use(helmet());
