@@ -23,7 +23,39 @@ socket.on('message', function (message) {
   //scroll down
 });
 
-socket.on('roomUsers', function ({room, users}) {
+
+const typeHandler = function (e) {
+  const searchedText = e.target.value;
+
+  socket.emit("search", {
+    name: username,
+    text: searchedText,
+    room: room
+  })
+}
+
+
+const searchBar = document.querySelector('#searchbar');
+const resultBar = document.querySelector('#results');
+searchBar.addEventListener('input', typeHandler) // register for oninput
+
+socket.on('searchResult', (results) => {
+  try {
+    $("#results").empty();
+    var html = ""
+    if (results.messages && results.messages.length) {
+      results.messages.forEach((msg) => {
+        html += '<li>' + msg.text + '</li>'
+      })
+      $("#results").append(html)
+      console.log(results);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+})
+
+socket.on('roomUsers', function ({ room, users }) {
   outputRoom(room);
   outputUsers(users);
 })
@@ -45,17 +77,12 @@ chatForm.addEventListener('submit', (event) => {
   event.target.elements.msg.focus();
 })
 
-function outputUsers(users){
+function outputUsers(users) {
   var ul = document.getElementById('users');
   ul.innerHTML = `${users.map(user => `<li>${user.username}</li>`).join('')}`;
-  // for(var user in users){
-  //   var li = document.createElement('li');
-  //   li.appendChild(document.createTextNode(users[user].username));
-  //   ul.appendChild(li);
-  // }
 }
 
-function outputRoom(room){
+function outputRoom(room) {
   document.getElementById('roomname').innerHTML = room;
 }
 

@@ -1,19 +1,22 @@
 require("dotenv").config();
+
+process.on('uncaughtException', (e) => {
+    console.error("Uncaught Exception", e);
+})
+
 const express = require("express");
-const https = require('https');
+const http = require("http");
 const path = require("path");
 const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
+const errorHandler = require('./src/routes/errorhandler')
 var expressSession = require('express-session');
 const initMongo = require("./src/core/mongo/index")
 const PORT = process.env.PORT || 3000;
-const fs = require("fs");
 
-const key = fs.readFileSync('./key.pem');
-const cert = fs.readFileSync('./cert.pem');
 
-const server = https.createServer({ key: key, cert: cert }, app);
+const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket.listen(server);
 
@@ -22,7 +25,7 @@ const apiRoutes = require("./src/routes/index");
 
 //Set Static folders
 app.set("view engine", "pug");
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
 
 socketConnection(io);
 app.use(helmet());
@@ -36,29 +39,6 @@ app.use(expressSession({
 }));
 
 
-
-// app.use((req, res, next) => {
-//     try{
-//         res.locals.cspNonce = 'e33ccde670f149c1789b1e1e113b0916';
-//         if (req.session && req.session.user) {
-//             let username = req.body.username || req.session.username;
-//             let room = req.body.room || req.session.room;
-//             if(!req.session || !req.session.user || !req.session.user.username ){
-//                 req.session.user = {};
-//                 req.session.user.username = username;
-//                 req.session.user.room = room;
-//             }
-//             req.session.user.username = username;
-//             req.session.user.room = room;
-//             console.log("USERNAME",username, "ROOM",room,"FROM USER");
-//             return res.render("chat", {username, room});
-//         }
-//         next && next();
-//     }
-//     catch(e){
-//         console.log("appuse",e);
-//     }
-// })
 app.get("/", (req, res) => {
     const error = (req.session.error || "none")
     res.render("index", { error })
@@ -73,4 +53,6 @@ initMongo().then(() => {
 }).catch((e) => {
     console.log("HERE", e);
 })
+
+app.use(errorHandler);
 
