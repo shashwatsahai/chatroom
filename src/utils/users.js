@@ -12,6 +12,11 @@ function getCurrentUser(id){
   return users.find(user => user.id === id);
 }
 
+function getUserRoom(id){
+  const user = users.find(user => user.id === id);
+  return user.room;
+}
+
 function userLeave(id){
   var index = users.findIndex(user => user.id === id);
 
@@ -27,5 +32,6 @@ module.exports = {
   userJoin,
   getCurrentUser,
   getRoomUsers,
-  userLeave
+  userLeave,
+  getUserRoom
 }

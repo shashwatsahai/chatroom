@@ -15,6 +15,8 @@ html
           |  ChatCord
         h2#username.
           #{username}
+        input(type="text" id="searchbar")
+        div#results
         a.btn(href='/') Leave Room
       main.chat-main
         .chat-sidebar
@@ -26,6 +28,7 @@ html
           h3
             i.fas.fa-users
             |  Users
+            input(type="text" id="usersearch")
           ul#users
         .chat-messages
       .chat-form-container

@@ -1,10 +1,21 @@
 var express = require("express");
-var app = express.Router();
 const path = require("path");
 
-app.all("*", (err, req, res) => {
-    console.log("ERROR", err);
-    res.status(500).send(err);
-})
+const { GeneralError } = require('../controllers/error/error');
 
-module.exports = app;
+const handleErrors = (err, req, res, next) => {
+    console.log("ERROR", err);
+    if (err instanceof GeneralError) {
+        return res.status(err.getCode()).json({
+            status: 'error',
+            message: err.message
+        });
+    }
+
+    return res.status(500).json({
+        status: 'error',
+        message: err.message
+    });
+}
+
+module.exports = handleErrors;

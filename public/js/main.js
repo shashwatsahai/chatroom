@@ -7,6 +7,8 @@ let {
   ignoreQueryPrefix: true
 });
 
+
+
 username = document.getElementById("username").innerHTML;
 room = document.getElementById("roomname").innerHTML;
 //Join chatroom

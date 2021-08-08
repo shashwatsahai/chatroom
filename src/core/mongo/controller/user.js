@@ -18,15 +18,16 @@ userController.addUser = (userDetails) => {
 
 userController.getUser = (email, password) => {
     return new Promise((resolve, reject) => {
+        console.log("EMAIL",email)
         User.findOne({ email: email }, (err, user) => {
+            console.log("HERE",user)
             if (err || !user) {
-                reject("User Not Found");
-                return;
+                return reject("User Not Found");
             }
 
 
             if (!user.authenticate(password)) {
-                reject("Invalid Password")
+                return reject("Invalid Password");
             }
 
             // const token = jwt.sign({ _id: user._id }, process.env.PRIVATE_KEY);
@@ -34,8 +35,8 @@ userController.getUser = (email, password) => {
             // const { _id, name, email, role } = user;
             // return res.json({ token, user: { _id, name, email, role } });
             delete user.encry_password;
-            delete user.salt
-            resolve(user);
+            delete user.salt;
+            return resolve(user);
         })
     })
 }
