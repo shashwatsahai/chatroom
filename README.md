@@ -7,7 +7,7 @@ Steps ->
 3. Enter your name and select Room
 4. Start Chatting!!
 
-Features
-Signup/Login
-Separate Rooms
-Chat Messages Searching
+Features ->
+1. Signup/Login
+2. Separate Rooms
+3. Chat Messages Searching
