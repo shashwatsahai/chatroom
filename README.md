@@ -6,3 +6,8 @@ Steps ->
 2. Open server:portname on browser(default-> localhost:3500 
 3. Enter your name and select Room
 4. Start Chatting!!
+
+Features ->
+1. Signup/Login
+2. Separate Rooms
+3. Chat Messages Searching
