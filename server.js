@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const https = require('https');
+const http = require('http');
 const path = require("path");
 const app = express();
 const morgan = require("morgan");
@@ -13,7 +14,7 @@ const fs = require("fs");
 const key = fs.readFileSync('./key.pem');
 const cert = fs.readFileSync('./cert.pem');
 
-const server = https.createServer({ key: key, cert: cert }, app);
+const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket.listen(server);
 
